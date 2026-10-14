@@ -1,0 +1,7 @@
+{"level":"info","message":"Handled application error Invalid refresh token","path":"/api/v1/auth/refresh","status":401,"timestamp":"2026-10-03 00:24:28"}
+{"level":"info","message":"Handled application error Invalid or expired OTP","path":"/api/v1/auth/reset-password","status":400,"timestamp":"2026-10-03 00:28:12"}
+{"level":"info","message":"Handled application error Invalid refresh token","path":"/api/v1/auth/refresh","status":401,"timestamp":"2026-10-03 00:51:22"}
+{"level":"info","message":"Handled application error Invalid refresh token","path":"/api/v1/auth/refresh","status":401,"timestamp":"2026-10-03 01:25:42"}
+{"level":"info","message":"Handled application error Invalid refresh token","path":"/api/v1/auth/refresh","status":401,"timestamp":"2026-10-03 01:41:03"}
+{"level":"info","message":"Handled application error Invalid refresh token","path":"/api/v1/auth/refresh","status":401,"timestamp":"2026-10-03 01:55:03"}
+{"level":"info","message":"Handled application error Invalid refresh token","path":"/api/v1/auth/refresh","status":401,"timestamp":"2026-10-03 02:11:02"}

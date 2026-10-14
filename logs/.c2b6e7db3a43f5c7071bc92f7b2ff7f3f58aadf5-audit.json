@@ -1,0 +1,50 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "logs/.c2b6e7db3a43f5c7071bc92f7b2ff7f3f58aadf5-audit.json",
+    "files": [
+        {
+            "date": 1790109296556,
+            "name": "logs/blockchain.log.2026-09-23",
+            "hash": "faf7a37d7eb6b685a2a617a2aeebf51941a9eb2b3c9a1cb6909028779cb5c586"
+        },
+        {
+            "date": 1790444792386,
+            "name": "logs/blockchain.log.2026-09-26",
+            "hash": "5dedfb70deef773151652fe07c553bed9e3d3b1f69dc511f51373dc04c2fced4"
+        },
+        {
+            "date": 1790449401834,
+            "name": "logs/blockchain.log.2026-09-27",
+            "hash": "30a84517a01cd6738d590d7e0e59dc7586f53ccc04fffbae59a0c074da2a9384"
+        },
+        {
+            "date": 1790613010246,
+            "name": "logs/blockchain.log.2026-09-28",
+            "hash": "7a044d039d01a712f493f77dd946e11368484396b2fc9dfe83785fbdbf4b7d76"
+        },
+        {
+            "date": 1790700249467,
+            "name": "logs/blockchain.log.2026-09-29",
+            "hash": "0aeca3d5b06704c0b753b8ca34ebb8a5840218e2ae3b72b1135acdc9ab129c75"
+        },
+        {
+            "date": 1790959646821,
+            "name": "logs/blockchain.log.2026-10-02",
+            "hash": "9dbc0be761ec6793bba57943fe860676e3d6a5397af2d2f79c30ffb81290e2cb"
+        },
+        {
+            "date": 1790967268895,
+            "name": "logs/blockchain.log.2026-10-03",
+            "hash": "2001ac7d4efad0a8134396a5257bb9f167e7b2cb8bc6cfea8f81893beb7fd85a"
+        },
+        {
+            "date": 1791957939629,
+            "name": "logs/blockchain.log.2026-10-14",
+            "hash": "c57995a277bd112a0b1b76a8cc6dac74c0e42bc04ffdf7a2f82d4cc9b72dcac5"
+        }
+    ],
+    "hashType": "sha256"
+}

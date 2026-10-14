@@ -1,0 +1,1466 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "2x100 Global API",
+    "version": "1.0.0",
+    "description": "2x100 Global Auto-Trading, Referral & Reward Platform",
+    "contact": {
+      "email": "support@2x100global.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1",
+      "description": "Development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authentication endpoints"
+    },
+    {
+      "name": "Users",
+      "description": "User profile and dashboard"
+    },
+    {
+      "name": "Wallet",
+      "description": "Wallets and transfers"
+    },
+    {
+      "name": "Ledger",
+      "description": "Ledger history"
+    },
+    {
+      "name": "Deposit",
+      "description": "USDT deposits"
+    },
+    {
+      "name": "Withdrawal",
+      "description": "Withdrawals"
+    },
+    {
+      "name": "Trade",
+      "description": "Auto trading"
+    },
+    {
+      "name": "Referral",
+      "description": "Referral tree and bonuses"
+    },
+    {
+      "name": "Rank",
+      "description": "Rank system"
+    },
+    {
+      "name": "Cycle Bonus",
+      "description": "Cycle bonus"
+    },
+    {
+      "name": "Blockchain",
+      "description": "Blockchain utilities"
+    },
+    {
+      "name": "Notifications",
+      "description": "Notifications"
+    },
+    {
+      "name": "Settings",
+      "description": "Platform settings"
+    },
+    {
+      "name": "Admin",
+      "description": "Admin panel"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/auth/signup": {
+      "post": {
+        "operationId": "post_signup",
+        "tags": [
+          "Auth"
+        ],
+        "summary": "POST /api/v1/auth/signup",
+        "description": "Public",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "post_login",
+        "tags": [
+          "Auth"
+        ],
+        "summary": "POST /api/v1/auth/login",
+        "description": "Public",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "operationId": "post_refresh",
+        "tags": [
+          "Auth"
+        ],
+        "summary": "POST /api/v1/auth/refresh",
+        "description": "Public",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "post_logout",
+        "tags": [
+          "Auth"
+        ],
+        "summary": "POST /api/v1/auth/logout",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/forgot-password": {
+      "post": {
+        "operationId": "post_forgot_password",
+        "tags": [
+          "Auth"
+        ],
+        "summary": "POST /api/v1/auth/forgot-password",
+        "description": "Public",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/reset-password": {
+      "post": {
+        "operationId": "post_reset_password",
+        "tags": [
+          "Auth"
+        ],
+        "summary": "POST /api/v1/auth/reset-password",
+        "description": "Public",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/change-password": {
+      "post": {
+        "operationId": "post_change_password",
+        "tags": [
+          "Auth"
+        ],
+        "summary": "POST /api/v1/auth/change-password",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/profile": {
+      "get": {
+        "operationId": "get_profile",
+        "tags": [
+          "Users"
+        ],
+        "summary": "GET /api/v1/users/profile",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "put_profile",
+        "tags": [
+          "Users"
+        ],
+        "summary": "PUT /api/v1/users/profile",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/withdraw-password": {
+      "post": {
+        "operationId": "post_withdraw_password",
+        "tags": [
+          "Users"
+        ],
+        "summary": "POST /api/v1/users/withdraw-password",
+        "description": "Set or change the withdraw password. Body: { withdrawPassword }. Restarts a 24h withdrawal lock.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/dashboard": {
+      "get": {
+        "operationId": "get_dashboard",
+        "tags": [
+          "Users"
+        ],
+        "summary": "GET /api/v1/users/dashboard",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/auto-trade/toggle": {
+      "post": {
+        "operationId": "post_auto_trade_toggle",
+        "tags": [
+          "Users"
+        ],
+        "summary": "POST /api/v1/users/auto-trade/toggle",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/": {
+      "get": {
+        "operationId": "get_",
+        "tags": [
+          "Users"
+        ],
+        "summary": "GET /api/v1/users/",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/wallets/summary": {
+      "get": {
+        "operationId": "get_summary",
+        "tags": [
+          "Wallets"
+        ],
+        "summary": "GET /api/v1/wallets/summary",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/wallets/:type": {
+      "get": {
+        "operationId": "get__type",
+        "tags": [
+          "Wallets"
+        ],
+        "summary": "GET /api/v1/wallets/:type",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/wallets/:type/balance": {
+      "get": {
+        "operationId": "get__type_balance",
+        "tags": [
+          "Wallets"
+        ],
+        "summary": "GET /api/v1/wallets/:type/balance",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/ledgers/": {
+      "get": {
+        "operationId": "get_",
+        "tags": [
+          "Ledgers"
+        ],
+        "summary": "GET /api/v1/ledgers/",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/ledgers/wallet/:walletId": {
+      "get": {
+        "operationId": "get_wallet__walletId",
+        "tags": [
+          "Ledgers"
+        ],
+        "summary": "GET /api/v1/ledgers/wallet/:walletId",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/ledgers/:id": {
+      "get": {
+        "operationId": "get__id",
+        "tags": [
+          "Ledgers"
+        ],
+        "summary": "GET /api/v1/ledgers/:id",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/deposits/": {
+      "post": {
+        "operationId": "post_",
+        "tags": [
+          "Deposits"
+        ],
+        "summary": "POST /api/v1/deposits/",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "get_",
+        "tags": [
+          "Deposits"
+        ],
+        "summary": "GET /api/v1/deposits/",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/deposits/statistics": {
+      "get": {
+        "operationId": "get_statistics",
+        "tags": [
+          "Deposits"
+        ],
+        "summary": "GET /api/v1/deposits/statistics",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/deposits/:id": {
+      "get": {
+        "operationId": "get__id",
+        "tags": [
+          "Deposits"
+        ],
+        "summary": "GET /api/v1/deposits/:id",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/deposits/:id/approve": {
+      "post": {
+        "operationId": "post__id_approve",
+        "tags": [
+          "Deposits"
+        ],
+        "summary": "POST /api/v1/deposits/:id/approve",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/deposits/:id/reject": {
+      "post": {
+        "operationId": "post__id_reject",
+        "tags": [
+          "Deposits"
+        ],
+        "summary": "POST /api/v1/deposits/:id/reject",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/deposits/admin/all": {
+      "get": {
+        "operationId": "get_admin_all",
+        "tags": [
+          "Deposits"
+        ],
+        "summary": "GET /api/v1/deposits/admin/all",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/withdrawals/": {
+      "post": {
+        "operationId": "post_",
+        "tags": [
+          "Withdrawals"
+        ],
+        "summary": "POST /api/v1/withdrawals/",
+        "description": "Requires authentication. Body: { amount, walletAddress, walletType, withdrawPassword }. Withdraw password must be set and the 24h post-change lock must have expired.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "get_",
+        "tags": [
+          "Withdrawals"
+        ],
+        "summary": "GET /api/v1/withdrawals/",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/withdrawals/statistics": {
+      "get": {
+        "operationId": "get_statistics",
+        "tags": [
+          "Withdrawals"
+        ],
+        "summary": "GET /api/v1/withdrawals/statistics",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/withdrawals/:id": {
+      "get": {
+        "operationId": "get__id",
+        "tags": [
+          "Withdrawals"
+        ],
+        "summary": "GET /api/v1/withdrawals/:id",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/withdrawals/:id/process": {
+      "post": {
+        "operationId": "post__id_process",
+        "tags": [
+          "Withdrawals"
+        ],
+        "summary": "POST /api/v1/withdrawals/:id/process",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/withdrawals/:id/reject": {
+      "post": {
+        "operationId": "post__id_reject",
+        "tags": [
+          "Withdrawals"
+        ],
+        "summary": "POST /api/v1/withdrawals/:id/reject",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/withdrawals/admin/all": {
+      "get": {
+        "operationId": "get_admin_all",
+        "tags": [
+          "Withdrawals"
+        ],
+        "summary": "GET /api/v1/withdrawals/admin/all",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/trades/history": {
+      "get": {
+        "operationId": "get_history",
+        "tags": [
+          "Trades"
+        ],
+        "summary": "GET /api/v1/trades/history",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/trades/stats": {
+      "get": {
+        "operationId": "get_stats",
+        "tags": [
+          "Trades"
+        ],
+        "summary": "GET /api/v1/trades/stats",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/trades/:id": {
+      "get": {
+        "operationId": "get__id",
+        "tags": [
+          "Trades"
+        ],
+        "summary": "GET /api/v1/trades/:id",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/trades/execute-session": {
+      "post": {
+        "operationId": "post_execute_session",
+        "tags": [
+          "Trades"
+        ],
+        "summary": "POST /api/v1/trades/execute-session",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/trades/settle": {
+      "post": {
+        "operationId": "post_settle",
+        "tags": [
+          "Trades"
+        ],
+        "summary": "POST /api/v1/trades/settle",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/trades/admin/all": {
+      "get": {
+        "operationId": "get_admin_all",
+        "tags": [
+          "Trades"
+        ],
+        "summary": "GET /api/v1/trades/admin/all",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/referrals/validate": {
+      "post": {
+        "operationId": "post_validate",
+        "tags": [
+          "Referrals"
+        ],
+        "summary": "POST /api/v1/referrals/validate",
+        "description": "Public",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/referrals/tree": {
+      "get": {
+        "operationId": "get_tree",
+        "tags": [
+          "Referrals"
+        ],
+        "summary": "GET /api/v1/referrals/tree",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/referrals/referrals": {
+      "get": {
+        "operationId": "get_referrals",
+        "tags": [
+          "Referrals"
+        ],
+        "summary": "GET /api/v1/referrals/referrals",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/referrals/bonuses": {
+      "get": {
+        "operationId": "get_bonuses",
+        "tags": [
+          "Referrals"
+        ],
+        "summary": "GET /api/v1/referrals/bonuses",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/referrals/statistics": {
+      "get": {
+        "operationId": "get_statistics",
+        "tags": [
+          "Referrals"
+        ],
+        "summary": "GET /api/v1/referrals/statistics",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/referrals/link": {
+      "get": {
+        "operationId": "get_link",
+        "tags": [
+          "Referrals"
+        ],
+        "summary": "GET /api/v1/referrals/link",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/ranks/current": {
+      "get": {
+        "operationId": "get_current",
+        "tags": [
+          "Ranks"
+        ],
+        "summary": "GET /api/v1/ranks/current",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/ranks/evaluate": {
+      "post": {
+        "operationId": "post_evaluate",
+        "tags": [
+          "Ranks"
+        ],
+        "summary": "POST /api/v1/ranks/evaluate",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cycle-bonuses/history": {
+      "get": {
+        "operationId": "get_history",
+        "tags": [
+          "Cycle bonuses"
+        ],
+        "summary": "GET /api/v1/cycle-bonuses/history",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cycle-bonuses/:id": {
+      "get": {
+        "operationId": "get__id",
+        "tags": [
+          "Cycle bonuses"
+        ],
+        "summary": "GET /api/v1/cycle-bonuses/:id",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cycle-bonuses/process": {
+      "post": {
+        "operationId": "post_process",
+        "tags": [
+          "Cycle bonuses"
+        ],
+        "summary": "POST /api/v1/cycle-bonuses/process",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cycle-bonuses/admin/all": {
+      "get": {
+        "operationId": "get_admin_all",
+        "tags": [
+          "Cycle bonuses"
+        ],
+        "summary": "GET /api/v1/cycle-bonuses/admin/all",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/blockchain/verify": {
+      "post": {
+        "operationId": "post_verify",
+        "tags": [
+          "Blockchain"
+        ],
+        "summary": "POST /api/v1/blockchain/verify",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/blockchain/balance": {
+      "get": {
+        "operationId": "get_balance",
+        "tags": [
+          "Blockchain"
+        ],
+        "summary": "GET /api/v1/blockchain/balance",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/blockchain/token-balance": {
+      "get": {
+        "operationId": "get_token_balance",
+        "tags": [
+          "Blockchain"
+        ],
+        "summary": "GET /api/v1/blockchain/token-balance",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/blockchain/receipt/:hash": {
+      "get": {
+        "operationId": "get_receipt__hash",
+        "tags": [
+          "Blockchain"
+        ],
+        "summary": "GET /api/v1/blockchain/receipt/:hash",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/blockchain/health": {
+      "get": {
+        "operationId": "get_health",
+        "tags": [
+          "Blockchain"
+        ],
+        "summary": "GET /api/v1/blockchain/health",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/notifications/": {
+      "get": {
+        "operationId": "get_",
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "GET /api/v1/notifications/",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/notifications/unread-count": {
+      "get": {
+        "operationId": "get_unread_count",
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "GET /api/v1/notifications/unread-count",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/notifications/:id/read": {
+      "put": {
+        "operationId": "put__id_read",
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "PUT /api/v1/notifications/:id/read",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/notifications/read-all": {
+      "put": {
+        "operationId": "put_read_all",
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "PUT /api/v1/notifications/read-all",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/settings/": {
+      "get": {
+        "operationId": "get_",
+        "tags": [
+          "Settings"
+        ],
+        "summary": "GET /api/v1/settings/",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "post_",
+        "tags": [
+          "Settings"
+        ],
+        "summary": "POST /api/v1/settings/",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/settings/:key": {
+      "get": {
+        "operationId": "get__key",
+        "tags": [
+          "Settings"
+        ],
+        "summary": "GET /api/v1/settings/:key",
+        "description": "Requires authentication",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "put__key",
+        "tags": [
+          "Settings"
+        ],
+        "summary": "PUT /api/v1/settings/:key",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/settings/seed": {
+      "post": {
+        "operationId": "post_seed",
+        "tags": [
+          "Settings"
+        ],
+        "summary": "POST /api/v1/settings/seed",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/dashboard": {
+      "get": {
+        "operationId": "get_dashboard",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "GET /api/v1/admin/dashboard",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/users": {
+      "get": {
+        "operationId": "get_users",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "GET /api/v1/admin/users",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/users/action": {
+      "post": {
+        "operationId": "post_users_action",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "POST /api/v1/admin/users/action",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/deposits": {
+      "get": {
+        "operationId": "get_deposits",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "GET /api/v1/admin/deposits",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/withdrawals": {
+      "get": {
+        "operationId": "get_withdrawals",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "GET /api/v1/admin/withdrawals",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/config": {
+      "put": {
+        "operationId": "put_config",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "PUT /api/v1/admin/config",
+        "description": "Admin only",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  }
+}

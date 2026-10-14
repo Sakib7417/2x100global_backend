@@ -1,0 +1,50 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "logs/.3e8b8453216e350e62b9a11b14ffb6c8ef861f6f-audit.json",
+    "files": [
+        {
+            "date": 1790109296556,
+            "name": "logs/trade.log.2026-09-23",
+            "hash": "99f176f9e52fef8a9a6267a34398120e642250e91f8a91ba1aaca5682e33a104"
+        },
+        {
+            "date": 1790444792385,
+            "name": "logs/trade.log.2026-09-26",
+            "hash": "79c8c73abe129be05b7c77d19bd1f2a502c7e2cf59dbd31a09e7e4073b1d5da2"
+        },
+        {
+            "date": 1790449401831,
+            "name": "logs/trade.log.2026-09-27",
+            "hash": "76ff346ff93054e3c3b5b3639854ce6525337e249cffe7642316beead4ca2b77"
+        },
+        {
+            "date": 1790613010245,
+            "name": "logs/trade.log.2026-09-28",
+            "hash": "bb561222f904fae71432d15406b33fddb07d55a36c5b8d17da72dc0c6dd18612"
+        },
+        {
+            "date": 1790700249465,
+            "name": "logs/trade.log.2026-09-29",
+            "hash": "b856812ca2acb37fe929ed744714f132a3ad370fd5556401ce6e8ac683bcf433"
+        },
+        {
+            "date": 1790959646820,
+            "name": "logs/trade.log.2026-10-02",
+            "hash": "687e93764f907ecbcfe4575170f53efc419f9fffa549dce811770bbe1f283f58"
+        },
+        {
+            "date": 1790967268894,
+            "name": "logs/trade.log.2026-10-03",
+            "hash": "efe0e4a922d8c544c9aaefc82cc1c27a10e64b58e3eff7a29fe6a9a1c3c7a0fd"
+        },
+        {
+            "date": 1791957939628,
+            "name": "logs/trade.log.2026-10-14",
+            "hash": "a0fe2c7b900c5153a1bce182cc9862e87f77018d7c7ceea27247f7859d128d84"
+        }
+    ],
+    "hashType": "sha256"
+}
