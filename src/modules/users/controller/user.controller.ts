@@ -25,11 +25,24 @@ export class UserController {
     }
   }
 
+  async requestWithdrawPasswordOtp(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = (req as any).user.userId;
+      await userService.requestWithdrawPasswordOtp(userId);
+      res.status(200).json({
+        success: true,
+        message: 'Verification code sent to your email.',
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async setWithdrawPassword(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = (req as any).user.userId;
       const data: SetWithdrawPasswordInput = req.body;
-      const result = await userService.setWithdrawPassword(userId, data.withdrawPassword);
+      const result = await userService.setWithdrawPassword(userId, data.withdrawPassword, data.otp);
       res.status(200).json({
         success: true,
         message:

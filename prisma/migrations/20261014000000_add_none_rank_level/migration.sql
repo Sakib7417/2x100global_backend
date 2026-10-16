@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "RankLevel" ADD VALUE 'NONE' BEFORE 'LV1';

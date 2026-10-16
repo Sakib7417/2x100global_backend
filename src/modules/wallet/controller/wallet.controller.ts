@@ -51,6 +51,27 @@ export class WalletController {
       next(error);
     }
   }
+
+  /**
+   * Move balance from a bonus wallet into PRINCIPAL (compounds the stake,
+   * restarts the trade-count baseline for the early-exit penalty)
+   */
+  async transferToPrincipal(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = (req as any).user.userId;
+      const result = await walletService.transferToPrincipal(
+        userId,
+        req.body.sourceWallet,
+        req.body.amount,
+      );
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const walletController = new WalletController();

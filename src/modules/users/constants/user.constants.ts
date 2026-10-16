@@ -7,6 +7,7 @@ export const USER_ERRORS = {
   WITHDRAW_PASSWORD_NOT_SET: 'Withdraw password is not set. Please set it in your profile before withdrawing.',
   WITHDRAW_PASSWORD_INVALID: 'Invalid withdraw password',
   WITHDRAWAL_LOCKED_PREFIX: 'Withdrawals are locked until',
+  INVALID_OTP: 'Invalid or expired verification code',
 } as const;
 
 // After the withdraw password is set or changed, withdrawals stay locked

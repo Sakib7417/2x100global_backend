@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { walletController } from '../controller/wallet.controller';
+import { validateRequest } from '../../../middlewares/validation.middleware';
+import { transferToPrincipalSchema } from '../validator/wallet.validator';
 import { authenticate } from '../../../middlewares/auth.middleware';
 
 const router = Router();
@@ -10,6 +12,14 @@ const router = Router();
  * @access  Private
  */
 router.get('/summary', authenticate, walletController.getWalletSummary.bind(walletController));
+
+/**
+ * @route   POST /api/v1/wallet/transfer
+ * @desc    Move a bonus-wallet balance into PRINCIPAL (compounds the
+ *          stake; restarts the trade-count penalty baseline)
+ * @access  Private
+ */
+router.post('/transfer', authenticate, validateRequest(transferToPrincipalSchema), walletController.transferToPrincipal.bind(walletController));
 
 /**
  * @route   GET /api/v1/wallet/:type

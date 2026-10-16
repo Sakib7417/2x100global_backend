@@ -13,10 +13,10 @@ export const REFERRAL_SUCCESS = {
   TREE_RETRIEVED: 'Referral tree retrieved successfully',
 } as const;
 
-export const REFERRAL_BONUS_TIERS = {
-  TIER_1_MIN: 50,
-  TIER_1_MAX: 999,
-  TIER_1_PERCENT: 0.05, // 5%
-  TIER_2_MIN: 1000,
-  TIER_2_PERCENT: 0.10, // 10%
-};
+// Tiered referral bonus — first matching tier wins:
+//   ≤300 USDT → 5%, ≤1000 → 8%, >1000 → 10% (no upper cap)
+export const REFERRAL_BONUS_TIERS = [
+  { maxAmount: 300, percentage: 0.05 },
+  { maxAmount: 1000, percentage: 0.08 },
+  { maxAmount: Infinity, percentage: 0.10 },
+] as const;

@@ -6,12 +6,13 @@ import {
   NotFoundError,
 } from '../../../utils/errors';
 import { CreateLedgerDTO, LedgerQueryDTO } from '../types/ledger.types';
+import { Prisma } from '@prisma/client';
 
 export class LedgerService {
   /**
    * Create ledger entry
    */
-  async createEntry(data: CreateLedgerDTO): Promise<any> {
+  async createEntry(data: CreateLedgerDTO, tx?: Prisma.TransactionClient): Promise<any> {
     // Validate balance calculation
     const calculatedAfterBalance = data.beforeBalance + data.credit - data.debit;
     if (Math.abs(calculatedAfterBalance - data.afterBalance) > 0.0001) {
@@ -40,7 +41,7 @@ export class LedgerService {
       referenceId: data.referenceId,
       referenceType: data.referenceType,
       metadata: data.metadata,
-    });
+    }, tx);
   }
 
   /**

@@ -60,15 +60,22 @@ export class WithdrawalService {
     // Calculate fee (15% flat)
     const fee = amount * WITHDRAWAL_FEE_PERCENTAGE;
 
-    // Principal early-exit penalty: 40% until the user completes 70% of the
-    // trade plan (140 of 200 trades). Counted on completed trades only.
+    // Early-exit penalty: 40% until the user completes 70% of the trade
+    // plan (140 of 200 trades) SINCE money last entered PRINCIPAL — each
+    // deposit approval or wallet transfer-in restarts the counter.
+    // Applies to PRINCIPAL and TRADING_PROFIT. Counted on completed
+    // trades only.
     let penalty = 0;
-    if (walletType === WalletType.PRINCIPAL) {
+    if (walletType === WalletType.PRINCIPAL ||
+        walletType === WalletType.TRADING_PROFIT) {
       const completedTrades = await prisma.trade.count({
         where: { userId, status: TradeStatus.COMPLETED },
       });
+      const effectiveCompleted = Math.max(
+        0, completedTrades - (user.tradeCountBaseline ?? 0),
+      );
 
-      if (completedTrades < TOTAL_PLAN_TRADES * PENALTY_FREE_TRADE_RATIO) {
+      if (effectiveCompleted < TOTAL_PLAN_TRADES * PENALTY_FREE_TRADE_RATIO) {
         penalty = amount * PRINCIPAL_PENALTY_PERCENTAGE;
       }
     }

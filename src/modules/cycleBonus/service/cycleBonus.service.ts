@@ -1,14 +1,16 @@
 import { cycleBonusRepository } from '../repository/cycleBonus.repository';
+import { rankService } from '../../rank/service/rank.service';
 import { RANK_DEFINITIONS } from '../../rank/constants/rank.constants';
 import { NotFoundError } from '../../../utils/errors';
 import { walletService } from '../../wallet/service/wallet.service';
 import { ledgerService } from '../../ledger/service/ledger.service';
 import prisma from '../../../config/database';
-import { CycleBonusStatus, WalletType, LedgerType, ReferenceType } from '@prisma/client';
+import { CycleBonusStatus, WalletType, LedgerType, ReferenceType, RankLevel } from '@prisma/client';
 
 export class CycleBonusService {
   /**
-   * Process 10-day Cycle Bonus for all eligible users (Triggered every 10 days by cron / admin)
+   * Process the cycle (salary) bonus for all eligible users.
+   * Triggered every CYCLE_DURATION_DAYS days by cron / admin.
    */
   async process10DayCycleBonus() {
     // Find all users who have achieved a rank
@@ -16,19 +18,35 @@ export class CycleBonusService {
       include: { user: true },
     });
 
+    // Live eligibility for the whole network — holding a rank is not
+    // enough for the salary: every rank condition must still hold right
+    // now (own principal stake, qualifying directs, achiever counts with
+    // still-eligible members). Anyone who withdrew their stake — or whose
+    // downline did — is skipped until the conditions hold again.
+    const eligibility = await rankService.computeNetworkEligibility();
+
     const now = new Date();
+    const cycleDays = parseInt(process.env.CYCLE_DURATION_DAYS || '10');
     const processedResults = [];
+    const skipped: string[] = [];
 
     for (const userRank of ranks) {
       try {
+        if (userRank.level === RankLevel.NONE) continue;
         const levelDef = RANK_DEFINITIONS[userRank.level];
         if (!levelDef || levelDef.cycleBonus <= 0) continue;
+
+        const info = eligibility.get(userRank.userId);
+        if (!info?.eligible) {
+          skipped.push(userRank.userId);
+          continue;
+        }
 
         // Determine cycle number
         const latestCycle = await cycleBonusRepository.findLatestByUserId(userRank.userId);
         const nextCycleNumber = latestCycle ? latestCycle.cycleNumber + 1 : 1;
 
-        const cycleStartDate = latestCycle ? latestCycle.cycleEndDate : new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000);
+        const cycleStartDate = latestCycle ? latestCycle.cycleEndDate : new Date(now.getTime() - cycleDays * 24 * 60 * 60 * 1000);
         const cycleEndDate = now;
 
         const bonusAmount = levelDef.cycleBonus;
@@ -47,8 +65,9 @@ export class CycleBonusService {
           status: CycleBonusStatus.PENDING,
           eligibilityData: {
             rankLevel: userRank.level,
-            directReferrals: userRank.directReferrals,
-            teamSize: userRank.teamSize,
+            teamSize: info.teamSize,
+            qualifyingDirects: info.qualifyingDirects,
+            lv1Achievers: info.descEligible[0],
           },
         });
 
@@ -68,7 +87,7 @@ export class CycleBonusService {
           debit: 0,
           beforeBalance: walletResult.beforeBalance,
           afterBalance: walletResult.afterBalance,
-          description: `10-Day Cycle Bonus for ${userRank.level} (Cycle #${nextCycleNumber})`,
+          description: `Salary Bonus for ${userRank.level} (Cycle #${nextCycleNumber})`,
           referenceId: cycleBonusRecord.id,
           referenceType: ReferenceType.CYCLE,
         });
@@ -93,6 +112,8 @@ export class CycleBonusService {
 
     return {
       processedCount: processedResults.length,
+      skippedCount: skipped.length,
+      skippedUserIds: skipped,
       bonuses: processedResults,
     };
   }

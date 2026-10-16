@@ -97,16 +97,23 @@ export class EmailService {
   }
 
   async sendEmailVerificationOtp(email: string, otp: string): Promise<void> {
-    const subject = 'Verify your DOLLAR2X account';
-    const text = `Your DOLLAR2X email verification code is: ${otp}. It is valid for 15 minutes.`;
-    const html = `<p>Your DOLLAR2X email verification code is:</p><h2>${otp}</h2><p>It is valid for 15 minutes.</p>`;
+    const subject = `Verify your ${this.fromName} account`;
+    const text = `Your ${this.fromName} email verification code is: ${otp}. It is valid for 15 minutes.`;
+    const html = `<p>Your ${this.fromName} email verification code is:</p><h2>${otp}</h2><p>It is valid for 15 minutes.</p>`;
     await this.send(email, subject, text, html);
   }
 
   async sendPasswordResetOtp(email: string, otp: string): Promise<void> {
-    const subject = 'Reset your DOLLAR2X password';
-    const text = `Your DOLLAR2X password reset code is: ${otp}. It is valid for 15 minutes.`;
-    const html = `<p>Your DOLLAR2X password reset code is:</p><h2>${otp}</h2><p>It is valid for 15 minutes.</p>`;
+    const subject = `Reset your ${this.fromName} password`;
+    const text = `Your ${this.fromName} password reset code is: ${otp}. It is valid for 15 minutes.`;
+    const html = `<p>Your ${this.fromName} password reset code is:</p><h2>${otp}</h2><p>It is valid for 15 minutes.</p>`;
+    await this.send(email, subject, text, html);
+  }
+
+  async sendWithdrawPasswordOtp(email: string, otp: string): Promise<void> {
+    const subject = `${this.fromName}: withdraw password change code`;
+    const text = `A request was made to set/change the withdraw password on your ${this.fromName} account. Your verification code is: ${otp}. It is valid for 15 minutes. If this was not you, do not share this code and secure your account.`;
+    const html = `<p>A request was made to set/change the withdraw password on your ${this.fromName} account.</p><h2>${otp}</h2><p>It is valid for 15 minutes.</p><p>If this was not you, do not share this code and secure your account.</p>`;
     await this.send(email, subject, text, html);
   }
 

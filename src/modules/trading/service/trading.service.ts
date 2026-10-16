@@ -366,20 +366,30 @@ export class TradingService {
 
   /**
    * Get trade statistics plus the user's progress through the 200-trade plan.
-   * `tradePlan.penaltyFree` is true once 70% of plan trades are completed —
-   * after that, Principal withdrawals skip the early-exit penalty.
+   * `tradePlan.penaltyFree` is true once 70% of plan trades are completed
+   * SINCE money last entered PRINCIPAL — deposits and wallet transfers-in
+   * restart the counter via `tradeCountBaseline`.
    */
   async getStatistics(userId?: string) {
     const stats = await tradingRepository.getStatistics(userId);
     const penaltyFreeAt = Math.ceil(TOTAL_PLAN_TRADES * PENALTY_FREE_TRADE_RATIO);
+    const baseline = userId
+      ? (await prisma.user.findUnique({
+          where: { id: userId },
+          select: { tradeCountBaseline: true },
+        }))?.tradeCountBaseline ?? 0
+      : 0;
+    const tradesSinceInflow = Math.max(0, stats.completedTrades - baseline);
 
     return {
       ...stats,
+      tradesSinceInflow,
+      tradeCountBaseline: baseline,
       tradePlan: {
         totalTrades: TOTAL_PLAN_TRADES,
         penaltyFreeAt,
-        completionPercent: Math.min(100, (stats.completedTrades / TOTAL_PLAN_TRADES) * 100),
-        penaltyFree: stats.completedTrades >= penaltyFreeAt,
+        completionPercent: Math.min(100, (tradesSinceInflow / TOTAL_PLAN_TRADES) * 100),
+        penaltyFree: tradesSinceInflow >= penaltyFreeAt,
       },
     };
   }

@@ -2,6 +2,7 @@ export const DEPOSIT_ERRORS = {
   DEPOSIT_NOT_FOUND: 'Deposit not found',
   INVALID_AMOUNT: 'Invalid deposit amount',
   MINIMUM_DEPOSIT: `Minimum deposit is 100 USDT`,
+  INVALID_PACKAGE: `Invalid deposit package. Allowed packages: 100, 300, 500, 1000, 2000, 5000, 10000 USDT`,
   INVALID_TRANSACTION_HASH: 'Invalid transaction hash',
   DUPLICATE_TRANSACTION: 'Duplicate transaction hash',
   VERIFICATION_FAILED: 'Deposit verification failed',
@@ -19,12 +20,10 @@ export const DEPOSIT_SUCCESS = {
 } as const;
 
 export const MINIMUM_DEPOSIT = 100;
+
+// Fixed deposit packages — users can only deposit one of these amounts
+export const ALLOWED_DEPOSIT_AMOUNTS = [100, 300, 500, 1000, 2000, 5000, 10000] as const;
 export const FEE_TOLERANCE_USD = 0.1; // Allow up to $0.10 shortfall due to token fees/slippage
 
-// Tiered deposit bonus — first matching tier wins:
-//   ≤300 USDT → 5%, ≤1000 → 8%, >1000 → 10% (no upper cap)
-export const DEPOSIT_BONUS_TIERS = [
-  { maxAmount: 300, percentage: 0.05 },
-  { maxAmount: 1000, percentage: 0.08 },
-  { maxAmount: Infinity, percentage: 0.10 },
-] as const;
+// Flat deposit bonus — 5% on all deposit amounts
+export const DEPOSIT_BONUS_RATE = 0.05;

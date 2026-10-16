@@ -1,24 +1,28 @@
-import { PrismaClient, Ledger, LedgerType, ReferenceType } from '@prisma/client';
+import { Prisma, Ledger, LedgerType, ReferenceType } from '@prisma/client';
 import prisma from '../../../config/database';
 
 export class LedgerRepository {
   /**
    * Create ledger entry
    */
-  async create(data: {
-    userId: string;
-    walletId: string;
-    type: LedgerType;
-    credit: number;
-    debit: number;
-    beforeBalance: number;
-    afterBalance: number;
-    description?: string;
-    referenceId?: string;
-    referenceType?: ReferenceType;
-    metadata?: any;
-  }): Promise<Ledger> {
-    return prisma.ledger.create({
+  async create(
+    data: {
+      userId: string;
+      walletId: string;
+      type: LedgerType;
+      credit: number;
+      debit: number;
+      beforeBalance: number;
+      afterBalance: number;
+      description?: string;
+      referenceId?: string;
+      referenceType?: ReferenceType;
+      metadata?: any;
+    },
+    tx?: Prisma.TransactionClient,
+  ): Promise<Ledger> {
+    const client = tx ?? prisma;
+    return client.ledger.create({
       data: {
         userId: data.userId,
         walletId: data.walletId,

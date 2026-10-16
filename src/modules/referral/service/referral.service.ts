@@ -119,14 +119,9 @@ export class ReferralService {
     }
 
     // Calculate percentage and bonus amount based on deposit size
-    // 50-999 USDT -> 5% Sponsor Bonus
-    // 1000-9999 USDT -> 10% Sponsor Bonus
-    let percentage = 0;
-    if (depositAmount >= REFERRAL_BONUS_TIERS.TIER_2_MIN) {
-      percentage = REFERRAL_BONUS_TIERS.TIER_2_PERCENT;
-    } else if (depositAmount >= REFERRAL_BONUS_TIERS.TIER_1_MIN) {
-      percentage = REFERRAL_BONUS_TIERS.TIER_1_PERCENT;
-    }
+    // ≤300 USDT -> 5%, ≤1000 -> 8%, >1000 -> 10% Sponsor Bonus
+    const percentage =
+      REFERRAL_BONUS_TIERS.find((tier) => depositAmount <= tier.maxAmount)?.percentage ?? 0;
 
     if (percentage === 0) return;
 

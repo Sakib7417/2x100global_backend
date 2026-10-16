@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
 import { userRepository } from '../repository/user.repository';
+import { authRepository } from '../../auth/repository/auth.repository';
+import { emailService } from '../../email/service/email.service';
 import { UpdateProfileDTO, UserListQueryDTO } from '../dto/user.dto';
 import { USER_ERRORS, WITHDRAW_PASSWORD_LOCK_HOURS } from '../constants/user.constants';
 import {
@@ -8,6 +10,12 @@ import {
   NotFoundError,
 } from '../../../utils/errors';
 import { walletService } from '../../wallet/service/wallet.service';
+
+const WITHDRAW_PASSWORD_OTP_PURPOSE = 'WITHDRAW_PASSWORD';
+const OTP_VALIDITY_MINUTES = 15;
+
+const generateOtp = (): string =>
+  Math.floor(100000 + Math.random() * 900000).toString();
 
 /**
  * Withdrawals are locked for WITHDRAW_PASSWORD_LOCK_HOURS after the withdraw
@@ -60,12 +68,38 @@ export class UserService {
   }
 
   /**
-   * Set or change the withdraw password. Every change restarts the 24h lock
-   * during which no withdrawal (including pool bonus) can be submitted.
+   * Step 1 of the withdraw-password change: email a 6-digit OTP to the
+   * account owner. Anyone who hijacks a session can reach this step, but
+   * only the mailbox owner can complete step 2 — so an unauthorized change
+   * attempt alerts the owner without effect.
    */
-  async setWithdrawPassword(userId: string, withdrawPassword: string) {
+  async requestWithdrawPasswordOtp(userId: string) {
     const user = await userRepository.findById(userId);
     if (!user) throw new NotFoundError(USER_ERRORS.USER_NOT_FOUND);
+
+    const otp = generateOtp();
+    const expiresAt = new Date(Date.now() + OTP_VALIDITY_MINUTES * 60 * 1000);
+    await authRepository.setEmailOtp(userId, otp, expiresAt, WITHDRAW_PASSWORD_OTP_PURPOSE);
+    await emailService.sendWithdrawPasswordOtp(user.email, otp);
+  }
+
+  /**
+   * Step 2: verify the emailed OTP, then set/change the withdraw password.
+   * Every change restarts the 24h lock during which no withdrawal
+   * (including pool bonus) can be submitted.
+   */
+  async setWithdrawPassword(userId: string, withdrawPassword: string, otp: string) {
+    const user = await userRepository.findById(userId);
+    if (!user) throw new NotFoundError(USER_ERRORS.USER_NOT_FOUND);
+
+    if (
+      user.emailOtp !== otp ||
+      user.emailOtpPurpose !== WITHDRAW_PASSWORD_OTP_PURPOSE ||
+      !user.emailOtpExpiresAt ||
+      user.emailOtpExpiresAt < new Date()
+    ) {
+      throw new BadRequestError(USER_ERRORS.INVALID_OTP);
+    }
 
     const hash = await bcrypt.hash(
       withdrawPassword,
@@ -75,6 +109,9 @@ export class UserService {
     await userRepository.update(userId, {
       withdrawPasswordHash: hash,
       withdrawPasswordSetAt: setAt,
+      emailOtp: null,
+      emailOtpExpiresAt: null,
+      emailOtpPurpose: null,
     });
 
     return {

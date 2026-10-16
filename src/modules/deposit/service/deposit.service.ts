@@ -10,8 +10,9 @@ import { ethers } from 'ethers';
 import {
   DEPOSIT_ERRORS,
   MINIMUM_DEPOSIT,
+  ALLOWED_DEPOSIT_AMOUNTS,
   FEE_TOLERANCE_USD,
-  DEPOSIT_BONUS_TIERS,
+  DEPOSIT_BONUS_RATE,
 } from '../constants/deposit.constants';
 import {
   SPONSOR_TRADE_BONUS_DEPOSIT_MIN,
@@ -41,11 +42,10 @@ export class DepositService {
   }
 
   /**
-   * Tiered deposit bonus rate — first matching tier wins.
-   * ≤300 USDT → 5%, ≤1000 → 8%, >1000 → 10% (no upper cap).
+   * Flat deposit bonus rate — 5% on all deposit amounts.
    */
-  private getDepositBonusRate(amount: number): number {
-    return DEPOSIT_BONUS_TIERS.find((tier) => amount <= tier.maxAmount)?.percentage ?? 0;
+  private getDepositBonusRate(): number {
+    return DEPOSIT_BONUS_RATE;
   }
 
   /**
@@ -59,14 +59,19 @@ export class DepositService {
       throw new BadRequestError(DEPOSIT_ERRORS.MINIMUM_DEPOSIT);
     }
 
+    // Only fixed deposit packages are allowed
+    if (!ALLOWED_DEPOSIT_AMOUNTS.includes(amount as (typeof ALLOWED_DEPOSIT_AMOUNTS)[number])) {
+      throw new BadRequestError(DEPOSIT_ERRORS.INVALID_PACKAGE);
+    }
+
     // Check for duplicate transaction hash
     const existingDeposit = await depositRepository.findByTransactionHash(data.transactionHash);
     if (existingDeposit) {
       throw new ConflictError(DEPOSIT_ERRORS.DUPLICATE_TRANSACTION);
     }
 
-    // Calculate tiered deposit bonus (≤300 → 5%, ≤1000 → 8%, >1000 → 10%)
-    const bonusAmount = amount * this.getDepositBonusRate(amount);
+    // Calculate flat deposit bonus (5%)
+    const bonusAmount = amount * this.getDepositBonusRate();
 
     // Create deposit record
     const deposit = await depositRepository.create({
@@ -150,7 +155,7 @@ export class DepositService {
     }
 
     const finalAmount = Math.max(declaredAmount, actualAmount);
-    const bonusAmount = finalAmount * this.getDepositBonusRate(finalAmount);
+    const bonusAmount = finalAmount * this.getDepositBonusRate();
 
     // Update deposit with blockchain data and the final credited amount
     await depositRepository.update(deposit.id, {
@@ -211,12 +216,14 @@ export class DepositService {
       referenceType: ReferenceType.DEPOSIT,
     });
 
-    // Credit deposit bonus wallet if applicable
+    // Credit deposit bonus straight into the principal wallet — there is
+    // no separate bonus wallet; the ledger entry keeps the bonus
+    // identifiable on the same wallet.
     const bonusNum = Number(deposit.bonusAmount);
     if (bonusNum > 0) {
       const bonusResult = await walletService.creditWallet(
         deposit.userId,
-        WalletType.DEPOSIT_BONUS,
+        WalletType.PRINCIPAL,
         bonusNum
       );
 
@@ -228,7 +235,7 @@ export class DepositService {
         debit: 0,
         beforeBalance: bonusResult.beforeBalance,
         afterBalance: bonusResult.afterBalance,
-        description: `Deposit bonus (${(this.getDepositBonusRate(Number(deposit.amount)) * 100).toFixed(0)}%) - ${deposit.transactionHash}`,
+        description: `Deposit bonus (${(this.getDepositBonusRate() * 100).toFixed(0)}%) - ${deposit.transactionHash}`,
         referenceId: deposit.id,
         referenceType: ReferenceType.DEPOSIT,
       });
@@ -236,6 +243,10 @@ export class DepositService {
 
     // Update deposit status
     await depositRepository.updateStatus(deposit.id, DepositStatus.APPROVED);
+
+    // Fresh money entered PRINCIPAL — restart the trade-plan counter so
+    // the early-exit penalty needs another penaltyFreeAt completed trades
+    await walletService.resetTradeCountBaseline(deposit.userId);
 
     // Process referral bonus
     await referralService.processReferralBonus(deposit.userId, Number(deposit.amount), deposit.id);

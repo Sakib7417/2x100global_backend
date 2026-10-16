@@ -18,13 +18,17 @@ model User {
   referralCode            String               @unique
   sponsorId               String?              @map("sponsor_id")
   walletAddress           String?
-  rank                    RankLevel            @default(LV1)
+  rank                    RankLevel            @default(NONE)
   autoTradeStatus         Boolean              @default(false)
   status                  UserStatus           @default(INACTIVE)
   isContentCreator        Boolean              @default(false) @map("is_content_creator")
   lastLogin               DateTime?
   sponsorTradeBonusExpiry DateTime?            @map("sponsor_trade_bonus_expiry")
   sponsorTradeBonusRate   Float?               @map("sponsor_trade_bonus_rate")
+  /// Completed-trade count at the moment money last entered PRINCIPAL
+  /// (deposit approval or wallet transfer-in). The early-exit penalty
+  /// applies until completedTrades - baseline reaches the plan threshold.
+  tradeCountBaseline      Int                  @default(0) @map("trade_count_baseline")
   govIdType               GovIdType?           @map("gov_id_type")
   createdAt               DateTime             @default(now())
   updatedAt               DateTime             @updatedAt
@@ -667,6 +671,7 @@ enum TradeType {
 }
 
 enum RankLevel {
+  NONE
   LV1
   LV2
   LV3

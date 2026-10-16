@@ -13,6 +13,9 @@ export const setWithdrawPasswordSchema = z.object({
     .min(8, 'Withdraw password must be at least 8 characters')
     .max(100)
     .regex(/^(?=.*[a-zA-Z])(?=.*\d)/, 'Withdraw password must contain letters and numbers'),
+  otp: z
+    .string()
+    .regex(/^\d{6}$/, 'Verification code must be 6 digits'),
 });
 
 export const listUsersSchema = z.object({

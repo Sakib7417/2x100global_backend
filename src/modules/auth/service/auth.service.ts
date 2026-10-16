@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { authRepository } from '../repository/auth.repository';
 import { emailService } from '../../email/service/email.service';
 import { referralService } from '../../referral/service/referral.service';
+import { rankService } from '../../rank/service/rank.service';
 import { walletService } from '../../wallet/service/wallet.service';
 import { AUTH_ERRORS, REFERRAL_CODE_LENGTH, REFERRAL_CODE_CHARS } from '../constants/auth.constants';
 import {
@@ -187,16 +188,24 @@ export class AuthService {
     if (user.sponsorId) {
       try {
         await referralService.createReferral(user.id, user.sponsorId);
+
+        // A new downline member can complete a sponsor's team-size rank
+        // requirement — re-evaluate the sponsor asynchronously
+        rankService.evaluateUserRank(user.sponsorId).catch((error) => {
+          console.error(`Failed to evaluate sponsor rank ${user.sponsorId}:`, error);
+        });
       } catch (error) {
         console.error(`Failed to create referral relationship for user ${user.id}:`, error);
       }
     }
 
-    // Auto-verify email (OTP disabled — direct verification)
+    // Account stays unverified until the emailed OTP is confirmed. A send
+    // failure must not fail signup — the user can request a new OTP from
+    // the verify page.
     try {
-      await authRepository.verifyEmail(user.id);
+      await this.createAndSendOtp(user, 'SIGNUP');
     } catch (error) {
-      console.error(`Failed to auto-verify email for user ${user.id}:`, error);
+      console.error(`Failed to send verification OTP to ${user.email}:`, error);
     }
 
     return { userId: user.id, email: user.email };
@@ -271,17 +280,19 @@ export class AuthService {
       throw new UnauthorizedError(AUTH_ERRORS.INVALID_CREDENTIALS);
     }
 
+    // Unverified email first: an unverified user's status is still the
+    // INACTIVE default, so the status check must not mask the
+    // "verify your email" guidance (verifying flips status to ACTIVE).
+    if (!user.emailVerified) {
+      throw new ForbiddenError(AUTH_ERRORS.EMAIL_NOT_VERIFIED);
+    }
+
     // Check account status
     if (user.status === 'INACTIVE') {
       throw new ForbiddenError(AUTH_ERRORS.ACCOUNT_INACTIVE);
     }
     if (user.status === 'SUSPENDED') {
       throw new ForbiddenError(AUTH_ERRORS.ACCOUNT_SUSPENDED);
-    }
-
-    // Ensure email is verified
-    if (!user.emailVerified) {
-      throw new ForbiddenError(AUTH_ERRORS.EMAIL_NOT_VERIFIED);
     }
 
     // Verify password

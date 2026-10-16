@@ -1,13 +1,20 @@
-import { PrismaClient, Wallet, WalletType } from '@prisma/client';
+import { Prisma, PrismaClient, Wallet, WalletType } from '@prisma/client';
 
 const prisma = new PrismaClient();
+
+type TxClient = Prisma.TransactionClient;
 
 export class WalletRepository {
   /**
    * Find wallet by user ID and type
    */
-  async findByUserIdAndType(userId: string, type: WalletType): Promise<Wallet | null> {
-    return prisma.wallet.findUnique({
+  async findByUserIdAndType(
+    userId: string,
+    type: WalletType,
+    tx?: TxClient,
+  ): Promise<Wallet | null> {
+    const client = tx ?? prisma;
+    return client.wallet.findUnique({
       where: {
         userId_type: {
           userId,
@@ -30,8 +37,9 @@ export class WalletRepository {
   /**
    * Find wallet by ID
    */
-  async findById(id: string): Promise<Wallet | null> {
-    return prisma.wallet.findUnique({
+  async findById(id: string, tx?: TxClient): Promise<Wallet | null> {
+    const client = tx ?? prisma;
+    return client.wallet.findUnique({
       where: { id },
     });
   }
@@ -57,7 +65,6 @@ export class WalletRepository {
   async createAllWallets(userId: string): Promise<Wallet[]> {
     const walletTypes: WalletType[] = [
       WalletType.PRINCIPAL,
-      WalletType.DEPOSIT_BONUS,
       WalletType.REFERRAL,
       WalletType.TRADING_PROFIT,
       WalletType.RANK_BONUS,
@@ -79,9 +86,11 @@ export class WalletRepository {
     id: string,
     balance: number,
     totalCredit: number,
-    totalDebit: number
+    totalDebit: number,
+    tx?: TxClient
   ): Promise<Wallet> {
-    return prisma.wallet.update({
+    const client = tx ?? prisma;
+    return client.wallet.update({
       where: { id },
       data: {
         balance,
@@ -94,8 +103,8 @@ export class WalletRepository {
   /**
    * Credit wallet
    */
-  async creditWallet(id: string, amount: number): Promise<Wallet> {
-    const wallet = await this.findById(id);
+  async creditWallet(id: string, amount: number, tx?: TxClient): Promise<Wallet> {
+    const wallet = await this.findById(id, tx);
     if (!wallet) {
       throw new Error('Wallet not found');
     }
@@ -103,14 +112,14 @@ export class WalletRepository {
     const newBalance = Number(wallet.balance) + amount;
     const newTotalCredit = Number(wallet.totalCredit) + amount;
 
-    return this.updateBalance(id, newBalance, newTotalCredit, Number(wallet.totalDebit));
+    return this.updateBalance(id, newBalance, newTotalCredit, Number(wallet.totalDebit), tx);
   }
 
   /**
    * Debit wallet
    */
-  async debitWallet(id: string, amount: number): Promise<Wallet> {
-    const wallet = await this.findById(id);
+  async debitWallet(id: string, amount: number, tx?: TxClient): Promise<Wallet> {
+    const wallet = await this.findById(id, tx);
     if (!wallet) {
       throw new Error('Wallet not found');
     }
@@ -122,7 +131,7 @@ export class WalletRepository {
       throw new Error('Insufficient balance');
     }
 
-    return this.updateBalance(id, newBalance, Number(wallet.totalCredit), newTotalDebit);
+    return this.updateBalance(id, newBalance, Number(wallet.totalCredit), newTotalDebit, tx);
   }
 
   /**
