@@ -38,6 +38,15 @@ export class AuthRepository {
   }
 
   /**
+   * Find user by device fingerprint (one-account-per-device rule)
+   */
+  async findByDeviceFingerprint(deviceFingerprint: string): Promise<User | null> {
+    return prisma.user.findFirst({
+      where: { deviceFingerprint, deletedAt: null },
+    });
+  }
+
+  /**
    * Create new user
    */
   async createUser(data: SignupDTO, hashedPassword: string, referralCode: string): Promise<User> {
@@ -53,6 +62,7 @@ export class AuthRepository {
         walletAddress: data.walletAddress,
         govIdType: data.govIdType,
         govIdUrl: data.govIdUrl,
+        deviceFingerprint: data.deviceFingerprint,
       },
       include: {
         sponsor: true,

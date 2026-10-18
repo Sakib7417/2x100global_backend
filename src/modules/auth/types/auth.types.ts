@@ -10,6 +10,7 @@ export interface SignupDTO {
   walletAddress?: string;
   govIdType?: GovIdType;
   govIdUrl?: string;
+  deviceFingerprint?: string;
 }
 
 export interface LoginDTO {

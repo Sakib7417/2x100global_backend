@@ -164,6 +164,15 @@ export class AuthService {
       throw new ConflictError(AUTH_ERRORS.USER_ALREADY_EXISTS);
     }
 
+    // One account per device — reject a second signup carrying a fingerprint
+    // already tied to a live account.
+    if (data.deviceFingerprint) {
+      const sameDevice = await authRepository.findByDeviceFingerprint(data.deviceFingerprint);
+      if (sameDevice) {
+        throw new ConflictError(AUTH_ERRORS.DEVICE_ALREADY_REGISTERED);
+      }
+    }
+
     // Validate referral code if provided
     if (data.referralCode) {
       const sponsor = await authRepository.findByReferralCode(data.referralCode);

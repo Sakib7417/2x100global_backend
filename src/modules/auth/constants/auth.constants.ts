@@ -18,6 +18,7 @@ export const AUTH_ERRORS = {
   INVALID_OTP: 'Invalid or expired OTP',
   OTP_NOT_FOUND: 'OTP not found or already used',
   USER_ALREADY_ACTIVE: 'User is already verified',
+  DEVICE_ALREADY_REGISTERED: 'An account already exists on this device',
 } as const;
 
 export const AUTH_SUCCESS = {

@@ -40,6 +40,9 @@ model User {
   withdrawPasswordHash    String?              @map("withdraw_password_hash")
   withdrawPasswordSetAt   DateTime?            @map("withdraw_password_set_at")
   govIdUrl                String?              @map("gov_id_url")
+  /// Browser device fingerprint captured at signup — enforces the
+  /// one-account-per-device rule.
+  deviceFingerprint       String?              @map("device_fingerprint")
   auditLogsAsUser         AuditLog[]           @relation("UserAuditLogs")
   cycleBonuses            CycleBonus[]
   deposits                Deposit[]
@@ -73,6 +76,7 @@ model User {
   @@index([rank])
   @@index([status])
   @@index([autoTradeStatus])
+  @@index([deviceFingerprint])
   @@map("users")
 }
 

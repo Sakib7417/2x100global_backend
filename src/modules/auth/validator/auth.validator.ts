@@ -11,6 +11,9 @@ export const signupSchema = z.object({
   referralCode: z.string().length(8, 'Referral code must be 8 characters').optional(),
   walletAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/, 'Invalid wallet address').optional(),
   govIdType: z.enum(GOV_ID_TYPES, { errorMap: () => ({ message: 'Invalid government ID type' }) }).optional(),
+  // Required for the one-account-per-device rule — sent by the web client's
+  // fingerprinting step; direct API callers must supply it too.
+  deviceFingerprint: z.string().min(8, 'Device fingerprint is required').max(128),
 });
 
 export const loginSchema = z.object({
